@@ -29,6 +29,14 @@ for table in tables:
 
 print(len(tables))
 
+# Iterate over the tables and extract their HTML content
+# for table in tables:
+#     print(table.get_attribute('outerHTML'))
+#     input()
+#     print(table.text)
+#     input()
+print(tables[1].text)
+
 # Close after 0.3 seconds
 time.sleep(0.3)
 driver.quit()
