@@ -1,9 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import pandas as pd
-import time
 
 def process_table_text(table_text):
     # Remove all unnecessary strings
@@ -39,15 +37,17 @@ def process_first_table_text(table_text):
     df = pd.DataFrame(processed_rows, columns=['통화명', '환율(원)'])
     return df
 
-# Open webpage
-url = "http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year=2024&StrSch_Month=01&StrSch_Day=09"
-driver = webdriver.Chrome()
-driver.get(url)
+# Set date
+year = '2024'
+month = '01'
+day = '09'
 
-# Click the button
-wait = WebDriverWait(driver, 10)
-close_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@onclick='closeMainPopup();']")))
-close_button.click()
+# Open webpage
+url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Headless mode
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(url)
 
 # Get the source
 html_source = driver.page_source
@@ -62,14 +62,16 @@ tables_content = []
 for table in tables:
     tables_content.append(table.get_attribute('outerHTML'))
 
-# print(tables[1].get_attribute('outerHTML'))
+# Get text
 first_table_text = tables[0].text
 table_text = tables[1].text
-df = process_first_table_text(first_table_text)
-# df = process_table_text(table_text)
-print(df.to_string(index=False))
 
-# Close after 0.3 seconds
-time.sleep(0.3)
+# Make dataframes and print
+df1 = process_first_table_text(first_table_text)
+df2 = process_table_text(table_text)
+print(df1.to_string(index=False))
+print(df2.to_string(index=False))
+
+# Close it
 driver.quit()
 
