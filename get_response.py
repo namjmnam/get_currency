@@ -37,41 +37,34 @@ def process_first_table_text(table_text):
     df = pd.DataFrame(processed_rows, columns=['통화명', '환율(원)'])
     return df
 
-# Set date
-year = '2024'
-month = '01'
-day = '09'
+def get_rate(year, month, day):
+    # Open webpage
+    url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Headless mode
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get(url)
 
-# Open webpage
-url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Headless mode
-driver = webdriver.Chrome(options=chrome_options)
-driver.get(url)
+    # Find all tables with class name 'table_type7'
+    tables = driver.find_elements(By.CLASS_NAME, "table_type7")
 
-# Get the source
-html_source = driver.page_source
+    # List to store the content of each table
+    tables_content = []
 
-# Find all tables with class name 'table_type7'
-tables = driver.find_elements(By.CLASS_NAME, "table_type7")
+    # Iterate over the tables and extract their HTML content
+    for table in tables:
+        tables_content.append(table.get_attribute('outerHTML'))
 
-# List to store the content of each table
-tables_content = []
+    # Get text
+    first_table_text = tables[0].text
+    table_text = tables[1].text
 
-# Iterate over the tables and extract their HTML content
-for table in tables:
-    tables_content.append(table.get_attribute('outerHTML'))
+    # Make dataframes and print
+    df1 = process_first_table_text(first_table_text)
+    df2 = process_table_text(table_text)
+    # print(df1.to_string(index=False))
+    # print(df2.to_string(index=False))
 
-# Get text
-first_table_text = tables[0].text
-table_text = tables[1].text
-
-# Make dataframes and print
-df1 = process_first_table_text(first_table_text)
-df2 = process_table_text(table_text)
-print(df1.to_string(index=False))
-print(df2.to_string(index=False))
-
-# Close it
-driver.quit()
-
+    # Close it
+    driver.quit()
+    return df1, df2
