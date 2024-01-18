@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
+import os
 
 def process_table_text(table_text):
     # Remove all unnecessary strings
@@ -38,33 +39,44 @@ def process_first_table_text(table_text):
     return df
 
 def get_rate(year, month, day):
-    # Open webpage
-    url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Headless mode
-    driver = webdriver.Chrome(options=chrome_options)
-    driver.get(url)
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    main_file = script_directory+f'/saved_data/{year}-{month}-{day}-main.csv'
+    sub_file = script_directory+f'/saved_data/{year}-{month}-{day}-sub.csv'
+    if os.path.exists(main_file) and os.path.exists(sub_file):
+        df1 = pd.read_csv(main_file)
+        df2 = pd.read_csv(sub_file)
+        print("Files already exist")
+    else:
+        # Open webpage
+        url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Headless mode
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(url)
 
-    # Find all tables with class name 'table_type7'
-    tables = driver.find_elements(By.CLASS_NAME, "table_type7")
+        # Find all tables with class name 'table_type7'
+        tables = driver.find_elements(By.CLASS_NAME, "table_type7")
 
-    # List to store the content of each table
-    tables_content = []
+        # List to store the content of each table
+        tables_content = []
 
-    # Iterate over the tables and extract their HTML content
-    for table in tables:
-        tables_content.append(table.get_attribute('outerHTML'))
+        # Iterate over the tables and extract their HTML content
+        for table in tables:
+            tables_content.append(table.get_attribute('outerHTML'))
 
-    # Get text
-    first_table_text = tables[0].text
-    table_text = tables[1].text
+        # Get text
+        first_table_text = tables[0].text
+        table_text = tables[1].text
 
-    # Make dataframes and print
-    df1 = process_first_table_text(first_table_text)
-    df2 = process_table_text(table_text)
-    # print(df1.to_string(index=False))
-    # print(df2.to_string(index=False))
+        # Make dataframes and print
+        df1 = process_first_table_text(first_table_text)
+        df2 = process_table_text(table_text)
+        # print(df1.to_string(index=False))
+        # print(df2.to_string(index=False))
 
-    # Close it
-    driver.quit()
+        # Close it
+        driver.quit()
+
+        df1.to_csv(main_file, index=False)
+        df2.to_csv(sub_file, index=False)
     return df1, df2
