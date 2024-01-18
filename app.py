@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -29,6 +29,36 @@ def update_dataframes():
     return render_template('index.html', 
                             tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
                             titles=[f"{new_year}-{new_month}-{new_day}", 'Main', 'Sub'])
+
+
+@app.route('/get_main_data/<date>')
+def get_main_dataframe(date):
+    # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    try:
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date_string = date_obj.strftime('%Y-%m-%d')
+        year, month, day = date_string.split('-')
+
+        df1, df2 = get_rate(year, month, day)
+        return jsonify(df1.to_dict())
+
+    except ValueError:
+        return "Invalid date format. Please use YYYY-MM-DD.", 400
+
+
+@app.route('/get_sub_data/<date>')
+def get_sub_dataframe(date):
+    # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    try:
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date_string = date_obj.strftime('%Y-%m-%d')
+        year, month, day = date_string.split('-')
+
+        df1, df2 = get_rate(year, month, day)
+        return jsonify(df2.to_dict())
+
+    except ValueError:
+        return "Invalid date format. Please use YYYY-MM-DD.", 400
 
 if __name__ == '__main__':
     app.run(debug=True)
