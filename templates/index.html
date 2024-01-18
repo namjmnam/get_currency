@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flask App</title>
+    <title>Get Currency</title>
     <style>
         .data { border-collapse: collapse; width: 50%; }
         .data, .data th, .data td { border: 1px solid black; }
@@ -12,6 +12,9 @@
 <body>
     <div class="left-align">
         <form action="/update_dataframes" method="post">
+            <input type="text" name="input_year" value="2024" placeholder="Enter year here">
+            <input type="text" name="input_month" value="01" placeholder="Enter month here">
+            <input type="text" name="input_day" value="15" placeholder="Enter day here">
             <button type="submit">Get Data</button>
         </form>
     </div>

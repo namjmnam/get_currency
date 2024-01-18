@@ -21,7 +21,10 @@ def index():
 
 @app.route('/update_dataframes', methods=['POST'])
 def update_dataframes():
-    new_year, new_month, new_day = '2024', '01', '09'
+    # new_year, new_month, new_day = '2024', '01', '09'
+    new_year = request.form.get('input_year')
+    new_month = request.form.get('input_month')
+    new_day = request.form.get('input_day')
     df1, df2 = get_rate(new_year, new_month, new_day) # Generate new dataframes
     return render_template('index.html', 
                             tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
