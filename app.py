@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from get_response import get_rate
+from get_response import delete_data
 
 def get_today_date():
     # Function to get today's date in 'YYYY', 'MM', 'DD' format
@@ -22,7 +23,6 @@ def index():
 
 @app.route('/update_dataframes', methods=['POST'])
 def update_dataframes():
-    # new_year, new_month, new_day = '2024', '01', '09'
     new_year = request.form.get('input_year')
     new_month = request.form.get('input_month')
     new_day = request.form.get('input_day')
@@ -31,6 +31,14 @@ def update_dataframes():
                             tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
                             titles=[f"{new_year}-{new_month}-{new_day}", 'Main', 'Sub'],
                             input_year=new_year, input_month=new_month, input_day=new_day)
+
+# Working, but unused
+# @app.route('/delete', methods=['POST'])
+# def delete_saved():
+#     year = request.form.get('input_year')
+#     month = request.form.get('input_month')
+#     day = request.form.get('input_day')
+#     delete_data(year, month, day)
 
 @app.route('/get_main_data/<date>')
 def get_main_dataframe(date):
@@ -62,4 +70,3 @@ def get_sub_dataframe(date):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-    # app.run(debug=True)

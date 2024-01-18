@@ -51,6 +51,15 @@
             <button type="submit">Get Data</button>
         </form>
     </div>
+    <!-- works, but left disabled-->
+    <!-- <div class="right-align">
+        <form action="/delete" method="post" id="dateForm">
+            <input type="text" name="input_year" id="input_year" placeholder="Enter year here">
+            <input type="text" name="input_month" id="input_month" placeholder="Enter month here">
+            <input type="text" name="input_day" id="input_day" placeholder="Enter day here">
+            <button type="submit">Reset Data</button>
+        </form>
+    </div> -->
     <h1>{{titles[0]}}</h1>
     {% for table in tables %}
         <h2>{{titles[loop.index]}}</h2>

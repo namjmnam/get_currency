@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import os
 from datetime import datetime
+script_directory = os.path.dirname(os.path.abspath(__file__))
 
 def is_valid_date(year, month, day):
     # Check if month and day are exactly two characters long
@@ -52,8 +53,21 @@ def process_table_text(table_text):
     df = pd.DataFrame(processed_rows, columns=['통화명', '환율(원)', 'Cross Rate(US$)'])
     return df
 
+def delete_data(year, month, day):
+    main_file = script_directory+f'/saved_data/{year}-{month}-{day}-main.csv'
+    sub_file = script_directory+f'/saved_data/{year}-{month}-{day}-sub.csv'
+    if os.path.exists(main_file):
+        os.remove(main_file)
+        print("File deleted.")
+    else:
+        print("File does not exist and cannot be deleted.")
+    if os.path.exists(sub_file):
+        os.remove(sub_file)
+        print("File deleted.")
+    else:
+        print("File does not exist and cannot be deleted.")
+
 def get_rate(year, month, day):
-    script_directory = os.path.dirname(os.path.abspath(__file__))
     main_file = script_directory+f'/saved_data/{year}-{month}-{day}-main.csv'
     sub_file = script_directory+f'/saved_data/{year}-{month}-{day}-sub.csv'
     if os.path.exists(main_file) and os.path.exists(sub_file):
