@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html>
     <script>
-        function setDefaultDate() {
-            if (!document.getElementById('input_year').value) { // If input_year is empty, meaning when loaded for the first time
-                var today = new Date();
-                document.getElementById('input_year').value = today.getFullYear();
-                document.getElementById('input_month').value = ('0' + (today.getMonth() + 1)).slice(-2);
-                document.getElementById('input_day').value = ('0' + today.getDate()).slice(-2);
-            }
-        }
-
         function incrementDay() {
             var year = parseInt(document.getElementById('input_year').value);
             var month = parseInt(document.getElementById('input_month').value) - 1; // JavaScript months are 0-11
@@ -39,8 +30,6 @@
         
             document.getElementById('dateForm').submit(); // Submit the form with the new date
         }
-    
-    // window.onload = setDefaultDate;
     </script>
 <head>
     <title>Get Currency</title>
@@ -55,9 +44,9 @@
     <div class="left-align">
         <form action="/update_dataframes" method="post" id="dateForm">
             <button type="button" onclick="decrementDay()">←</button>
-            <input type="text" name="input_year" id="input_year" placeholder="Enter year here">
-            <input type="text" name="input_month" id="input_month" placeholder="Enter month here">
-            <input type="text" name="input_day" id="input_day" placeholder="Enter day here">
+            <input type="text" name="input_year" id="input_year" placeholder="Enter year here" value="{{ input_year or '' }}">
+            <input type="text" name="input_month" id="input_month" placeholder="Enter month here" value="{{ input_month or '' }}">
+            <input type="text" name="input_day" id="input_day" placeholder="Enter day here" value="{{ input_day or '' }}">
             <button type="button" onclick="incrementDay()">→</button>
             <button type="submit">Get Data</button>
         </form>

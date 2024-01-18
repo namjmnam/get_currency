@@ -17,7 +17,8 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html', tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
-                            titles=[f"{year}-{month}-{day}", 'Main', 'Sub'])
+                            titles=[f"{year}-{month}-{day}", 'Main', 'Sub'],
+                            input_year=year, input_month=month, input_day=day)
 
 @app.route('/update_dataframes', methods=['POST'])
 def update_dataframes():
@@ -28,8 +29,8 @@ def update_dataframes():
     df1, df2 = get_rate(new_year, new_month, new_day) # Generate new dataframes
     return render_template('index.html', 
                             tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
-                            titles=[f"{new_year}-{new_month}-{new_day}", 'Main', 'Sub'])
-
+                            titles=[f"{new_year}-{new_month}-{new_day}", 'Main', 'Sub'],
+                            input_year=new_year, input_month=new_month, input_day=new_day)
 
 @app.route('/get_main_data/<date>')
 def get_main_dataframe(date):
@@ -44,7 +45,6 @@ def get_main_dataframe(date):
 
     except ValueError:
         return "Invalid date format. Please use YYYY-MM-DD.", 400
-
 
 @app.route('/get_sub_data/<date>')
 def get_sub_dataframe(date):

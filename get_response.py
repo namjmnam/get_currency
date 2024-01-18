@@ -6,6 +6,10 @@ import os
 from datetime import datetime
 
 def is_valid_date(year, month, day):
+    # Check if month and day are exactly two characters long
+    if len(month) != 2 or len(day) != 2:
+        return False
+
     try:
         input_date = datetime(int(year), int(month), int(day))
         current_date = datetime.now()
