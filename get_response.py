@@ -3,6 +3,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import os
+from datetime import datetime
+
+def is_valid_date(year, month, day):
+    try:
+        input_date = datetime(int(year), int(month), int(day))
+        current_date = datetime.now()
+        return input_date <= current_date
+    except ValueError:
+        # This occurs if the date is invalid (like April 31st)
+        return False
 
 def process_first_table_text(table_text):
     # Remove all unnecessary strings
@@ -47,39 +57,43 @@ def get_rate(year, month, day):
         df2 = pd.read_csv(sub_file)
         print("Files already exist")
     else:
+        df1 = pd.DataFrame(columns=['통화명', '환율(원)'])
+        df2 = pd.DataFrame(columns=['통화명', '환율(원)', 'Cross Rate(US$)'])
         try:
-            # Open webpage
-            url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
-            chrome_options = Options()
-            chrome_options.add_argument("--headless")  # Headless mode
-            driver = webdriver.Chrome(options=chrome_options)
-            driver.get(url)
+            if is_valid_date(year, month, day):
+                # Open webpage
+                url = f"http://www.smbs.biz/ExRate/TodayExRate.jsp?StrSch_Year={year}&StrSch_Month={month}&StrSch_Day={day}"
+                chrome_options = Options()
+                chrome_options.add_argument("--headless")  # Headless mode
+                driver = webdriver.Chrome(options=chrome_options)
+                driver.get(url)
 
-            # Find all tables with class name 'table_type7'
-            tables = driver.find_elements(By.CLASS_NAME, "table_type7")
+                # Find all tables with class name 'table_type7'
+                tables = driver.find_elements(By.CLASS_NAME, "table_type7")
 
-            # List to store the content of each table
-            tables_content = []
+                # List to store the content of each table
+                tables_content = []
 
-            # Iterate over the tables and extract their HTML content
-            for table in tables:
-                tables_content.append(table.get_attribute('outerHTML'))
+                # Iterate over the tables and extract their HTML content
+                for table in tables:
+                    tables_content.append(table.get_attribute('outerHTML'))
 
-            # Get text
-            first_table_text = tables[0].text
-            table_text = tables[1].text
+                # Get text
+                first_table_text = tables[0].text
+                table_text = tables[1].text
 
-            # Make dataframes and print
-            df1 = process_first_table_text(first_table_text)
-            df2 = process_table_text(table_text)
-            # print(df1.to_string(index=False))
-            # print(df2.to_string(index=False))
+                # Make dataframes and print
+                df1 = process_first_table_text(first_table_text)
+                df2 = process_table_text(table_text)
+                # print(df1.to_string(index=False))
+                # print(df2.to_string(index=False))
 
-            # Close it
-            driver.quit()
+                # Close it
+                driver.quit()
+            else:
+                return df1, df2
         except:
-            df1 = pd.DataFrame(columns=['통화명', '환율(원)'])
-            df2 = pd.DataFrame(columns=['통화명', '환율(원)', 'Cross Rate(US$)'])
+            pass
         df1.to_csv(main_file, index=False)
         df2.to_csv(sub_file, index=False)
     return df1, df2

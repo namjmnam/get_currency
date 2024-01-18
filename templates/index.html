@@ -1,5 +1,47 @@
 <!DOCTYPE html>
 <html>
+    <script>
+        function setDefaultDate() {
+            if (!document.getElementById('input_year').value) { // If input_year is empty, meaning when loaded for the first time
+                var today = new Date();
+                document.getElementById('input_year').value = today.getFullYear();
+                document.getElementById('input_month').value = ('0' + (today.getMonth() + 1)).slice(-2);
+                document.getElementById('input_day').value = ('0' + today.getDate()).slice(-2);
+            }
+        }
+
+        function incrementDay() {
+            var year = parseInt(document.getElementById('input_year').value);
+            var month = parseInt(document.getElementById('input_month').value) - 1; // JavaScript months are 0-11
+            var day = parseInt(document.getElementById('input_day').value);
+        
+            var date = new Date(year, month, day);
+            date.setDate(date.getDate() + 1); // Increment the day
+        
+            document.getElementById('input_year').value = date.getFullYear();
+            document.getElementById('input_month').value = ('0' + (date.getMonth() + 1)).slice(-2); // Adjust for zero-based months
+            document.getElementById('input_day').value = ('0' + date.getDate()).slice(-2);
+        
+            document.getElementById('dateForm').submit(); // Submit the form with the new date
+        }
+
+        function decrementDay() {
+            var year = parseInt(document.getElementById('input_year').value);
+            var month = parseInt(document.getElementById('input_month').value) - 1; // JavaScript months are 0-11
+            var day = parseInt(document.getElementById('input_day').value);
+        
+            var date = new Date(year, month, day);
+            date.setDate(date.getDate() - 1); // Decrement the day
+        
+            document.getElementById('input_year').value = date.getFullYear();
+            document.getElementById('input_month').value = ('0' + (date.getMonth() + 1)).slice(-2); // Adjust for zero-based months
+            document.getElementById('input_day').value = ('0' + date.getDate()).slice(-2);
+        
+            document.getElementById('dateForm').submit(); // Submit the form with the new date
+        }
+    
+    // window.onload = setDefaultDate;
+    </script>
 <head>
     <title>Get Currency</title>
     <style>
@@ -11,10 +53,12 @@
 </head>
 <body>
     <div class="left-align">
-        <form action="/update_dataframes" method="post">
-            <input type="text" name="input_year" value="2024" placeholder="Enter year here">
-            <input type="text" name="input_month" value="01" placeholder="Enter month here">
-            <input type="text" name="input_day" value="15" placeholder="Enter day here">
+        <form action="/update_dataframes" method="post" id="dateForm">
+            <button type="button" onclick="decrementDay()">←</button>
+            <input type="text" name="input_year" id="input_year" placeholder="Enter year here">
+            <input type="text" name="input_month" id="input_month" placeholder="Enter month here">
+            <input type="text" name="input_day" id="input_day" placeholder="Enter day here">
+            <button type="button" onclick="incrementDay()">→</button>
             <button type="submit">Get Data</button>
         </form>
     </div>
