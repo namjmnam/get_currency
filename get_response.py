@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
 def is_valid_date(year, month, day):
@@ -114,4 +114,26 @@ def get_rate(year, month, day):
             pass
         df1.to_csv(main_file, index=False)
         df2.to_csv(sub_file, index=False)
+
+    # # Move back to the last date of publishement
+    # # Not working. Trying to make it execute itself within the function
+    # if len(df1) == 0:
+    #     year = int(year)
+    #     month = int(month)
+    #     day = int(day)
+
+    #     # Creating a datetime object
+    #     original_date = datetime(year, month, day)
+
+    #     # Subtracting one day
+    #     new_date = original_date - timedelta(days=1)
+
+    #     # Convert the new date back to strings
+    #     new_year = str(new_date.year)
+    #     new_month = f"{new_date.month:02d}" # Formats the month as a zero-padded string
+    #     new_day = f"{new_date.day:02d}" # Formats the day as a zero-padded string
+
+    #     print(new_year, new_month, new_day)
+    #     df1, df2 = get_rate(new_year, new_month, new_date)
+
     return df1, df2
