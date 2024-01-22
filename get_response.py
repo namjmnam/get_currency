@@ -116,7 +116,7 @@ def get_rate(year, month, day):
         df2.to_csv(sub_file, index=False)
 
     # # Move back to the last date of publishement
-    # # Not working. Trying to make it execute itself within the function
+    # # Fixed, have not tried yet
     # if len(df1) == 0:
     #     year = int(year)
     #     month = int(month)
@@ -133,7 +133,7 @@ def get_rate(year, month, day):
     #     new_month = f"{new_date.month:02d}" # Formats the month as a zero-padded string
     #     new_day = f"{new_date.day:02d}" # Formats the day as a zero-padded string
 
-    #     print(new_year, new_month, new_day)
-    #     df1, df2 = get_rate(new_year, new_month, new_date)
+    #     # print(new_year, new_month, new_day)
+    #     return get_rate(new_year, new_month, new_day)
 
     return df1, df2
