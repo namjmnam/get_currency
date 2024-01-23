@@ -4,6 +4,7 @@ import numpy as np
 from datetime import datetime
 from get_response import get_rate
 from get_response import delete_data
+from get_russian import get_rurate
 
 def get_today_date():
     # Function to get today's date in 'YYYY', 'MM', 'DD' format
@@ -12,13 +13,14 @@ def get_today_date():
 
 year, month, day = get_today_date()
 df1, df2 = get_rate(year, month, day)
+df3 = get_rurate(year, month, day)
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html', tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
-                            titles=[f"{year}-{month}-{day}", 'Main', 'Sub'],
+    return render_template('index.html', tables=[df1.to_html(classes='data'), df2.to_html(classes='data'), df3.to_html(classes='data')],
+                            titles=[f"{year}-{month}-{day}", 'Main', 'Sub', 'Rus'],
                             input_year=year, input_month=month, input_day=day)
 
 @app.route('/update_dataframes', methods=['POST'])
@@ -26,10 +28,11 @@ def update_dataframes():
     new_year = request.form.get('input_year')
     new_month = request.form.get('input_month')
     new_day = request.form.get('input_day')
-    df1, df2 = get_rate(new_year, new_month, new_day) # Generate new dataframes
+    df1, df2 = get_rate(new_year, new_month, new_day)
+    df3 = get_rurate(new_year, new_month, new_day)
     return render_template('index.html', 
-                            tables=[df1.to_html(classes='data'), df2.to_html(classes='data')],
-                            titles=[f"{new_year}-{new_month}-{new_day}", 'Main', 'Sub'],
+                            tables=[df1.to_html(classes='data'), df2.to_html(classes='data'), df3.to_html(classes='data')],
+                            titles=[f"{new_year}-{new_month}-{new_day}", 'Main', 'Sub', 'Rus'],
                             input_year=new_year, input_month=new_month, input_day=new_day)
 
 # Working, but unused
@@ -95,7 +98,6 @@ def get_sub_dataframe(date):
     except ValueError:
         return "Invalid date format. Please use YYYY-MM-DD.", 400
 
-
 @app.route('/get_sub_data/<date>/<key>')
 def get_sub_dataframe_key(date, key):
     # Convert the string date to a datetime object, handle exceptions if format is incorrect
@@ -123,6 +125,46 @@ def get_sub_dataframe_key(date, key):
     except IndexError:
         return "Index out of range.", 404
 
+@app.route('/get_rus_data/<date>')
+def get_rus_dataframe(date):
+    # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    try:
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date_string = date_obj.strftime('%Y-%m-%d')
+        year, month, day = date_string.split('-')
+
+        df3 = get_rurate(year, month, day)
+        return jsonify(df3.to_dict())
+
+    except ValueError:
+        return "Invalid date format. Please use YYYY-MM-DD.", 400
+
+@app.route('/get_rus_data/<date>/<key>')
+def get_rus_dataframe_key(date, key):
+    # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    try:
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date_string = date_obj.strftime('%Y-%m-%d')
+        year, month, day = date_string.split('-')
+
+        df3 = get_rurate(year, month, day)
+
+        # Split the key on "-" and then navigate through the data frame
+        keys = key.split('-')
+        data = df3
+        for k in keys:
+            if k.isdigit():
+                k = int(k)  # Convert to integer if the key is a digit
+            data = data[k]  # Navigate through the DataFrame or Series
+
+        return jsonify(data)
+
+    except ValueError:
+        return "Invalid date format. Please use YYYY-MM-DD.", 400
+    except KeyError:
+        return "Key not found in the data.", 404
+    except IndexError:
+        return "Index out of range.", 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
