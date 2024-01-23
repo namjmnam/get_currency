@@ -115,25 +115,24 @@ def get_rate(year, month, day):
         df1.to_csv(main_file, index=False)
         df2.to_csv(sub_file, index=False)
 
-    # # Move back to the last date of publishement
-    # # Fixed, have not tried yet
-    # if len(df1) == 0:
-    #     year = int(year)
-    #     month = int(month)
-    #     day = int(day)
+    # Move back to the last date of publishement
+    if len(df1) == 0:
+        year = int(year)
+        month = int(month)
+        day = int(day)
 
-    #     # Creating a datetime object
-    #     original_date = datetime(year, month, day)
+        # Creating a datetime object
+        original_date = datetime(year, month, day)
 
-    #     # Subtracting one day
-    #     new_date = original_date - timedelta(days=1)
+        # Subtracting one day
+        new_date = original_date - timedelta(days=1)
 
-    #     # Convert the new date back to strings
-    #     new_year = str(new_date.year)
-    #     new_month = f"{new_date.month:02d}" # Formats the month as a zero-padded string
-    #     new_day = f"{new_date.day:02d}" # Formats the day as a zero-padded string
+        # Convert the new date back to strings
+        new_year = str(new_date.year)
+        new_month = f"{new_date.month:02d}" # Formats the month as a zero-padded string
+        new_day = f"{new_date.day:02d}" # Formats the day as a zero-padded string
 
-    #     # print(new_year, new_month, new_day)
-    #     return get_rate(new_year, new_month, new_day)
+        # print(new_year, new_month, new_day)
+        return get_rate(new_year, new_month, new_day)
 
     return df1, df2
