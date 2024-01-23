@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import io
 
 def get_rurate(year, month, day):
     url = f"https://www.cbr.ru/eng/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={day}.{month}.{year}"
@@ -15,12 +16,14 @@ def get_rurate(year, month, day):
         # Find the table with class 'data'
         table = soup.find('table', {'class': 'data'})
 
-        # Read the table with pandas
-        df = pd.read_html(str(table))[0]
-
-        return df
+        if 'table' in locals():
+            table_html = str(table)
+            df = pd.read_html(io.StringIO(table_html))[0]
+            return df
+        else:
+            print("The table data is not available. Please provide the HTML content or the table data for processing.")
     else:
         print(f"Failed to retrieve data. Status code: {response.status_code}")
 
-df = get_rurate('2024', '01', '20')
-print(df)
+# df = get_rurate('2024', '01', '20')
+# print(df)
