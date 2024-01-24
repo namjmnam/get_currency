@@ -52,7 +52,9 @@ def get_main_dataframe(date):
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
+        df1.set_index('통화명', inplace=True)
         return jsonify(df1.to_dict())
+        # return jsonify(df1.to_dict(orient='index'))
 
     except ValueError:
         return "Invalid date format. Please use YYYY-MM-DD.", 400
@@ -60,19 +62,26 @@ def get_main_dataframe(date):
 @app.route('/get_main_data/<date>/<key>')
 def get_main_dataframe_key(date, key):
     # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    print(key)
     try:
         date_obj = datetime.strptime(date, '%Y-%m-%d')
         date_string = date_obj.strftime('%Y-%m-%d')
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
+        # df1.set_index('통화명', inplace=True)
+        # Change not applied
+        # Needs to convert to unocode
 
         # Split the key on "-" and then navigate through the data frame
+        key = key.replace("_", " ")
         keys = key.split('-')
+        print(keys)
         data = df1
         for k in keys:
             if k.isdigit():
                 k = int(k)  # Convert to integer if the key is a digit
+            print(data[k])
             data = data[k]  # Navigate through the DataFrame or Series
 
         return jsonify(data)
@@ -93,7 +102,9 @@ def get_sub_dataframe(date):
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
+        df2.set_index('통화명', inplace=True)
         return jsonify(df2.to_dict())
+        # return jsonify(df2.to_dict(orient='index'))
 
     except ValueError:
         return "Invalid date format. Please use YYYY-MM-DD.", 400
@@ -101,19 +112,26 @@ def get_sub_dataframe(date):
 @app.route('/get_sub_data/<date>/<key>')
 def get_sub_dataframe_key(date, key):
     # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    print(key)
     try:
         date_obj = datetime.strptime(date, '%Y-%m-%d')
         date_string = date_obj.strftime('%Y-%m-%d')
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
+        # df2.set_index('통화명', inplace=True)
+        # Change not applied
+        # Needs to convert to unocode
 
         # Split the key on "-" and then navigate through the data frame
+        key = key.replace("_", " ")
         keys = key.split('-')
+        print(keys)
         data = df2
         for k in keys:
             if k.isdigit():
                 k = int(k)  # Convert to integer if the key is a digit
+            print(data[k])
             data = data[k]  # Navigate through the DataFrame or Series
 
         return jsonify(data)
@@ -134,7 +152,10 @@ def get_rus_dataframe(date):
         year, month, day = date_string.split('-')
 
         df3 = get_rurate(year, month, day)
+        # Not a regular c. Same for Num code
+        df3.set_index('Char сode', inplace=True)
         return jsonify(df3.to_dict())
+        # return jsonify(df3.to_dict(orient='index'))
 
     except ValueError:
         return "Invalid date format. Please use YYYY-MM-DD.", 400
@@ -142,16 +163,23 @@ def get_rus_dataframe(date):
 @app.route('/get_rus_data/<date>/<key>')
 def get_rus_dataframe_key(date, key):
     # Convert the string date to a datetime object, handle exceptions if format is incorrect
+    print(key)
     try:
         date_obj = datetime.strptime(date, '%Y-%m-%d')
         date_string = date_obj.strftime('%Y-%m-%d')
         year, month, day = date_string.split('-')
 
         df3 = get_rurate(year, month, day)
+        df3.set_index('Char сode', inplace=True)
+        # Change applied
 
         # Split the key on "-" and then navigate through the data frame
+        key = key.replace("_", " ")
         keys = key.split('-')
+        print(keys)
         data = df3
+        # json_result = data.to_json()
+        # print(json_result)
         for k in keys:
             if k.isdigit():
                 k = int(k)  # Convert to integer if the key is a digit
