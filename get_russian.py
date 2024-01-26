@@ -50,5 +50,7 @@ def get_rurate(year, month, day):
             return df
         else:
             print(f"Failed to retrieve data. Status code: {response.status_code}")
+    else:
+        return df
     df.columns = ['Numcode', 'Charcode', 'Unit', 'Currency', 'Rate']
     return df
