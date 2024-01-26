@@ -6,6 +6,9 @@ import os
 from datetime import datetime, timedelta
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
+def convert_to_numeric(s):
+    return pd.to_numeric(s.replace(',', '').replace('\n', ''), errors='coerce')
+
 def extract_between_parentheses(s):
     start = s.find('(') + 1
     end = s.find(')', start)
@@ -118,6 +121,9 @@ def get_rate(year, month, day):
                 df2.columns = ['Currency', 'KRW', 'USD']
                 df1['Currency'] = df1['Currency'].apply(extract_between_parentheses)
                 df2['Currency'] = df2['Currency'].apply(extract_between_parentheses)
+                df1['KRW'] = df1['KRW'].apply(convert_to_numeric)
+                df2['KRW'] = df2['KRW'].apply(convert_to_numeric)
+                df2['USD'] = df2['USD'].apply(convert_to_numeric)
 
                 # Close it
                 driver.quit()
@@ -126,6 +132,9 @@ def get_rate(year, month, day):
                 df2.columns = ['Currency', 'KRW', 'USD']
                 df1['Currency'] = df1['Currency'].apply(extract_between_parentheses)
                 df2['Currency'] = df2['Currency'].apply(extract_between_parentheses)
+                df1['KRW'] = df1['KRW'].apply(convert_to_numeric)
+                df2['KRW'] = df2['KRW'].apply(convert_to_numeric)
+                df2['USD'] = df2['USD'].apply(convert_to_numeric)
                 return df1, df2
         except:
             pass
@@ -155,4 +164,7 @@ def get_rate(year, month, day):
     df2.columns = ['Currency', 'KRW', 'USD']
     df1['Currency'] = df1['Currency'].apply(extract_between_parentheses)
     df2['Currency'] = df2['Currency'].apply(extract_between_parentheses)
+    df1['KRW'] = df1['KRW'].apply(convert_to_numeric)
+    df2['KRW'] = df2['KRW'].apply(convert_to_numeric)
+    df2['USD'] = df2['USD'].apply(convert_to_numeric)
     return df1, df2
