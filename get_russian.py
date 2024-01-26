@@ -42,10 +42,13 @@ def get_rurate(year, month, day):
             if 'table' in locals():
                 table_html = str(table)
                 df = pd.read_html(io.StringIO(table_html))[0]
+                df.columns = ['Numcode', 'Charcode', 'Unit', 'Currency', 'Rate']
                 df.to_csv(rus_file, index=False)
             else:
                 print("The table data is not available. Please provide the HTML content or the table data for processing.")
+            df.columns = ['Numcode', 'Charcode', 'Unit', 'Currency', 'Rate']
             return df
         else:
             print(f"Failed to retrieve data. Status code: {response.status_code}")
+    df.columns = ['Numcode', 'Charcode', 'Unit', 'Currency', 'Rate']
     return df

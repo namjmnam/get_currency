@@ -6,6 +6,11 @@ import os
 from datetime import datetime, timedelta
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
+def extract_between_parentheses(s):
+    start = s.find('(') + 1
+    end = s.find(')', start)
+    return s[start:end] if start > 0 and end > start else s
+
 def is_valid_date(year, month, day):
     # Check if month and day are exactly two characters long
     if len(month) != 2 or len(day) != 2:
@@ -33,6 +38,7 @@ def process_first_table_text(table_text):
             processed_rows.append([first_column, second_column])
 
     df = pd.DataFrame(processed_rows, columns=['통화명', '환율(원)'])
+    df.columns = ['Currency', 'KRW']
     return df
 
 def process_table_text(table_text):
@@ -51,6 +57,7 @@ def process_table_text(table_text):
             processed_rows.append([first_column, second_column, third_column])
 
     df = pd.DataFrame(processed_rows, columns=['통화명', '환율(원)', 'Cross Rate(US$)'])
+    df.columns = ['Currency', 'KRW', 'USD']
     return df
 
 def delete_data(year, month, day):
@@ -73,6 +80,8 @@ def get_rate(year, month, day):
     if os.path.exists(main_file) and os.path.exists(sub_file):
         df1 = pd.read_csv(main_file)
         df2 = pd.read_csv(sub_file)
+        df1.columns = ['Currency', 'KRW']
+        df2.columns = ['Currency', 'KRW', 'USD']
         print("Files already exist")
     else:
         df1 = pd.DataFrame(columns=['통화명', '환율(원)'])
@@ -105,10 +114,18 @@ def get_rate(year, month, day):
                 df2 = process_table_text(table_text)
                 # print(df1.to_string(index=False))
                 # print(df2.to_string(index=False))
+                df1.columns = ['Currency', 'KRW']
+                df2.columns = ['Currency', 'KRW', 'USD']
+                df1['Currency'] = df1['Currency'].apply(extract_between_parentheses)
+                df2['Currency'] = df2['Currency'].apply(extract_between_parentheses)
 
                 # Close it
                 driver.quit()
             else:
+                df1.columns = ['Currency', 'KRW']
+                df2.columns = ['Currency', 'KRW', 'USD']
+                df1['Currency'] = df1['Currency'].apply(extract_between_parentheses)
+                df2['Currency'] = df2['Currency'].apply(extract_between_parentheses)
                 return df1, df2
         except:
             pass
@@ -134,5 +151,8 @@ def get_rate(year, month, day):
 
         # print(new_year, new_month, new_day)
         return get_rate(new_year, new_month, new_day)
-
+    df1.columns = ['Currency', 'KRW']
+    df2.columns = ['Currency', 'KRW', 'USD']
+    df1['Currency'] = df1['Currency'].apply(extract_between_parentheses)
+    df2['Currency'] = df2['Currency'].apply(extract_between_parentheses)
     return df1, df2

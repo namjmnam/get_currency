@@ -52,7 +52,7 @@ def get_main_dataframe(date):
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
-        df1.set_index('통화명', inplace=True)
+        df1.set_index('Currency', inplace=True)
         return jsonify(df1.to_dict())
         # return jsonify(df1.to_dict(orient='index'))
 
@@ -69,9 +69,7 @@ def get_main_dataframe_key(date, key):
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
-        # df1.set_index('통화명', inplace=True)
-        # Change not applied
-        # Needs to convert to unocode
+        df1.set_index('Currency', inplace=True)
 
         # Split the key on "-" and then navigate through the data frame
         key = key.replace("_", " ")
@@ -102,7 +100,7 @@ def get_sub_dataframe(date):
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
-        df2.set_index('통화명', inplace=True)
+        df2.set_index('Currency', inplace=True)
         return jsonify(df2.to_dict())
         # return jsonify(df2.to_dict(orient='index'))
 
@@ -119,9 +117,7 @@ def get_sub_dataframe_key(date, key):
         year, month, day = date_string.split('-')
 
         df1, df2 = get_rate(year, month, day)
-        # df2.set_index('통화명', inplace=True)
-        # Change not applied
-        # Needs to convert to unocode
+        df2.set_index('Currency', inplace=True)
 
         # Split the key on "-" and then navigate through the data frame
         key = key.replace("_", " ")
@@ -153,7 +149,7 @@ def get_rus_dataframe(date):
 
         df3 = get_rurate(year, month, day)
         # Not a regular c. Same for Num code
-        df3.set_index('Char сode', inplace=True)
+        df3.set_index('Charcode', inplace=True)
         return jsonify(df3.to_dict())
         # return jsonify(df3.to_dict(orient='index'))
 
@@ -170,7 +166,7 @@ def get_rus_dataframe_key(date, key):
         year, month, day = date_string.split('-')
 
         df3 = get_rurate(year, month, day)
-        df3.set_index('Char сode', inplace=True)
+        df3.set_index('Charcode', inplace=True)
         # Change applied
 
         # Split the key on "-" and then navigate through the data frame
