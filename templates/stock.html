@@ -1,51 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sample Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Webpage</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-        .header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 0;
-        }
-        .main {
-            margin: 15px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .datepicker-filter_button {
-            padding: 10px 20px;
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .datepicker-filter_button:hover {
-            background-color: #005f73;
-        }
+        .code-input { width: 70%; }
+        .value-input { width: 30%; }
+        .additional-codes { margin-top: 10px; }
+        .plus-button { margin-top: 10px; }
     </style>
 </head>
 <body>
+    <form action="/submit" method="post">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required>
 
-<div class="header">
-    <h1>Sample Page</h1>
-</div>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required>
 
-<div class="main">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    <button class="datepicker-filter_button" type="button">31.01.2024</button>
-</div>
+        <div class="primary-code">
+            <p>Primary Code</p>
+            <input type="text" class="code-input" name="primaryCode" required>
+            <input type="number" class="value-input" name="primaryValue" required>
+        </div>
 
+        <button type="button" class="plus-button">+</button>
+
+        <div class="additional-codes" id="additionalCodes"></div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.plus-button').click(function() {
+                $('#additionalCodes').append('<input type="text" class="code-input" name="additionalCode[]"><input type="number" class="value-input" name="additionalValue[]">');
+            });
+        });
+    </script>
 </body>
 </html>
