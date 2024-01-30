@@ -9,7 +9,7 @@ script_directory = os.path.dirname(os.path.abspath(__file__))
 def convert_to_numeric(s):
     try:
         return pd.to_numeric(s.replace(',', '').replace('\n', ''), errors='coerce')
-    except: pass
+    except: return s
 
 def extract_between_parentheses(s):
     start = s.find('(') + 1
