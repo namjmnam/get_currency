@@ -12,9 +12,11 @@ def convert_to_numeric(s):
     except: return s
 
 def extract_between_parentheses(s):
-    start = s.find('(') + 1
-    end = s.find(')', start)
-    return s[start:end] if start > 0 and end > start else s
+    try:
+        start = s.find('(') + 1
+        end = s.find(')', start)
+        return s[start:end] if start > 0 and end > start else s
+    except: return s
 
 def is_valid_date(year, month, day):
     # Check if month and day are exactly two characters long

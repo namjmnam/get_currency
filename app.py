@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import stock_page
 from get_response import get_rate
 from get_response import delete_data
 from get_russian import get_rurate
@@ -190,6 +189,12 @@ def get_rus_dataframe_key(date, key):
         return "Key not found in the data.", 404
     except IndexError:
         return "Index out of range.", 404
+
+@app.route('/test')
+def test_route():
+    return "Test route works"
+
+import stock_page
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
