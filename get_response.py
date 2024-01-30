@@ -140,8 +140,12 @@ def get_rate(year, month, day):
                 return df1, df2
         except:
             pass
-        df1.to_csv(main_file, index=False)
-        df2.to_csv(sub_file, index=False)
+        # The problem is that the new table comes out at 9am
+        if len(df2) > 2:
+            if not os.path.exists(script_directory+f'/saved_data/'):
+                os.makedirs(script_directory+f'/saved_data/')
+            df1.to_csv(main_file, index=False)
+            df2.to_csv(sub_file, index=False)
 
     # Move back to the last date of publishement
     if len(df1) == 0:

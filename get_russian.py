@@ -35,6 +35,9 @@ def get_rurate(year, month, day):
         if response.status_code == 200:
             # Parse the HTML content
             soup = BeautifulSoup(response.content, 'html.parser')
+            server_day = soup.find('button', {'class': 'datepicker-filter_button'})
+            print(server_day)
+            # print(server_day[:2])
 
             # Find the table with class 'data'
             table = soup.find('table', {'class': 'data'})
@@ -43,6 +46,16 @@ def get_rurate(year, month, day):
                 table_html = str(table)
                 df = pd.read_html(io.StringIO(table_html))[0]
                 df.columns = ['Numcode', 'Charcode', 'Unit', 'Currency', 'Rate']
+                # print(df)
+                # print(len(df))
+                # Issue is that when the date is in the future, the russian central bank will retrieve past.
+                # Depending on timezone, this can be a problem.
+                # Thus, if the date here and the date on the website are different, it should not accept the dataframe
+                # <button class="datepicker-filter_button" type="button">31.01.2024</button>
+                # The class="datepicker-filter_button" should be same as the date
+                # This fix is not implemented yet
+                if not os.path.exists(script_directory+f'/saved_data/'):
+                    os.makedirs(script_directory+f'/saved_data/')
                 df.to_csv(rus_file, index=False)
             else:
                 print("The table data is not available. Please provide the HTML content or the table data for processing.")

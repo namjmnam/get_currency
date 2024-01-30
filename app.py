@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import stock_page
 from get_response import get_rate
 from get_response import delete_data
 from get_russian import get_rurate
