@@ -7,7 +7,9 @@ from datetime import datetime, timedelta
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
 def convert_to_numeric(s):
-    return pd.to_numeric(s.replace(',', '').replace('\n', ''), errors='coerce')
+    try:
+        return pd.to_numeric(s.replace(',', '').replace('\n', ''), errors='coerce')
+    except: pass
 
 def extract_between_parentheses(s):
     start = s.find('(') + 1
