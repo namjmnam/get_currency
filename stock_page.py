@@ -38,5 +38,7 @@ def submit():
     # 아세아제지 002310 47.19
 
     # Works, but not working
-    codes_to_plt(primary, additional, start_date, end_date)
-    return "Data Received"
+    nm, df = codes_to_plt(primary, additional, start_date, end_date)
+    data_json = df.to_json(orient='split')
+    # print(data_json)
+    return render_template('graph.html', data=data_json)

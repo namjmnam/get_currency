@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Graph</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div id="graph"></div>
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var trace1 = {
+                x: [1, 2, 3, 4],
+                y: [10, 11, 12, 13],
+                type: 'scatter'
+            };
+    
+            var plotData = [trace1];
+    
+            Plotly.newPlot('graph', plotData);
+        });
+    </script> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = JSON.parse('{{ data|tojson|safe }}');
+
+            var trace1 = {
+                x: data.data.map(row => new Date(row[0])), // Convert timestamps to Date objects for x-axis
+                y: data.data.map(row => row[1]), // First numerical column for y-values
+                type: 'scatter',
+                mode: 'lines',
+                name: data.columns[1], // Name of the first numerical column
+                line: { color: 'blue' }
+            };
+
+            var trace2 = {
+                x: data.data.map(row => new Date(row[0])), // Convert timestamps to Date objects for x-axis
+                y: data.data.map(row => row[2]), // Second numerical column for y-values
+                type: 'scatter',
+                mode: 'lines',
+                name: data.columns[2], // Name of the second numerical column
+                line: { color: 'gray' }
+            };
+
+            var plotData = [trace1, trace2];
+
+            Plotly.newPlot('graph', plotData);
+        });
+    </script>
+</body>
+</html>

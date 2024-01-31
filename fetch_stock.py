@@ -84,7 +84,7 @@ def codes_to_plt(primary_code, additional_codes, start_date, end_date):
         df['날짜'] = pd.to_datetime(df['날짜'], format='%Y%m%d')
         
         shrout = int(fetch_financial_data(code).iloc[2, 1])
-        df['종가'] = df['종가'] * shrout * ratio / 100000000
+        df['지주시총'] = df['종가'] * shrout * ratio / 100000000
 
         # Create 종속회사 시총
         df['종속시총'] = 0
@@ -101,21 +101,8 @@ def codes_to_plt(primary_code, additional_codes, start_date, end_date):
                 sub_shrout = int(fetch_financial_data(sub_code).iloc[2, 1])
                 sub_df['종가'] = sub_df['종가'] * sub_shrout * sub_ratio / 100000000
                 df['종속시총'] = df['종속시총'] + sub_df['종가']
-
         nm = polling_api(code)
-        # Plotting the graph
-        plt.figure(figsize=(10, 6))
-        plt.plot(df['날짜'], df['종가'], color='blue', linestyle='-', marker='', label='지주시총')
-        plt.plot(df['날짜'], df['종속시총'], color='gray', linestyle='-', marker='', label='종속시총')
-        plt.title(f'{nm} 지주-종속 시총 비교', fontproperties=korean_font)
-        plt.xlabel('날짜', fontproperties=korean_font)
-        plt.ylabel('시계열 시가총액(억원)', fontproperties=korean_font)
-        plt.xticks(rotation=45)
-        plt.grid(True)
-        plt.tight_layout()
-
-        # Show the plot
-        plt.show()
+        return nm, df[['날짜', '지주시총', '종속시총']]
 
 # 예시
 # 삼성전자 005930
