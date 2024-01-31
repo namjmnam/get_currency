@@ -1,6 +1,7 @@
 from __main__ import app
 from flask import request, render_template
 from fetch_stock import codes_to_plt
+import json
 
 @app.route('/stock')
 def stock():
@@ -40,5 +41,5 @@ def submit():
     # Works, but not working
     nm, df = codes_to_plt(primary, additional, start_date, end_date)
     data_json = df.to_json(orient='split')
-    # print(data_json)
-    return render_template('graph.html', data=data_json)
+    data_dict = json.loads(data_json)
+    return render_template('graph.html', data=data_dict)

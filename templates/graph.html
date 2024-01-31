@@ -21,10 +21,11 @@
         });
     </script> -->
 
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function() {
-            var data = JSON.parse('{{ data|tojson|safe }}');
-
+            // Since 'data' is already an object, no need to parse it
+            var data = {{ data|tojson|safe }};
+    
             var trace1 = {
                 x: data.data.map(row => new Date(row[0])), // Convert timestamps to Date objects for x-axis
                 y: data.data.map(row => row[1]), // First numerical column for y-values
@@ -33,7 +34,7 @@
                 name: data.columns[1], // Name of the first numerical column
                 line: { color: 'blue' }
             };
-
+    
             var trace2 = {
                 x: data.data.map(row => new Date(row[0])), // Convert timestamps to Date objects for x-axis
                 y: data.data.map(row => row[2]), // Second numerical column for y-values
@@ -42,11 +43,11 @@
                 name: data.columns[2], // Name of the second numerical column
                 line: { color: 'gray' }
             };
-
+    
             var plotData = [trace1, trace2];
-
+    
             Plotly.newPlot('graph', plotData);
         });
-    </script>
+    </script>    
 </body>
 </html>
